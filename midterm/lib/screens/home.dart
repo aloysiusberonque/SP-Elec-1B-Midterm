@@ -15,7 +15,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   // Create a variable todosList to iterate the values in the List<ToDo>
   final todosList = ToDo.todoList();
+  List<ToDo> _foundToDo = [];
   final _todoController = TextEditingController();
+
+  @override
+  void initState() {
+    // Assign the default values of List<ToDo> in todosList to _foundToDo to serve as the default value on initial state
+    _foundToDo = todosList;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +50,17 @@ class _HomeState extends State<Home> {
                       // Render ToDoItem inside a forloop
                       // The right todo in ToDoItem is the todo inside Todo which we are getting from the list
                       // While the left todo in ToDoItem is from todo_item.dart where it is expected
-                      for (ToDo todo in todosList)
+
+                      // for (ToDo todo in todosList)
+                      //   ToDoItem(
+                      //     todo: todo,
+                      //     onToDoChanged: _handleToDoChange,
+                      //     onDeleteItem: _deleteToDoItem,
+                      //   ),
+
+                      // Instead of rendering the values from todosList, we now would then render from _foundToDo
+                      // The purpose of .reversed is to reverse the list so that everytime we add, items added will be on top
+                      for (ToDo todo in _foundToDo.reversed)
                         ToDoItem(
                           todo: todo,
                           onToDoChanged: _handleToDoChange,
@@ -91,7 +109,10 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           onPressed: () {
-                            _addToDoItem(_todoController.text);
+                            // To make sure that it does not accept empty values
+                            if (_todoController.text.isNotEmpty) {
+                              _addToDoItem(_todoController.text);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                               primary: tdBlue,
@@ -131,12 +152,33 @@ class _HomeState extends State<Home> {
     _todoController.clear();
   }
 
+  void _runFilter(String enteredKeyword) {
+    // List with the type of ToDo
+    List<ToDo> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = todosList;
+    } else {
+      // Inside todosList, it will check for the todoText and check if it contains the enteredKeyword, then convert it to List since results is a List type
+      results = todosList
+          .where((item) => item.todoText!
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      _foundToDo = results;
+    });
+  }
+
   Widget searchBox() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: TextField(
+        // Detect every keystroke and then run the _runFilter function
+        onChanged: (value) => _runFilter(value),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
             prefixIcon: Icon(

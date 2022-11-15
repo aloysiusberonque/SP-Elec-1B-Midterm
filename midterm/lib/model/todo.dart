@@ -5,6 +5,7 @@ class ToDo {
 
   ToDo({required this.id, required this.todoText, this.isDone = false});
 
+// Creation of array of items
   static List<ToDo> todoList() {
     return[
       ToDo(id: '01', todoText: 'Morning Exercise', isDone: true),
