@@ -1,22 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:midterm/constants/colors.dart';
+
+// Relative path
+import '../model/todo.dart';
+import '../constants/colors.dart';
+import '../widgets/todo_item.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  Home({Key? key}) : super(key: key);
+
+  // Create a variable todosList to iterate the values in the List<ToDo>
+  final todosList = ToDo.todoList();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: tdBGColor,
         appBar: _buildAppBar(),
-        body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          child: Column(
-            children: [
-              searchBox(),
-            ],
+        body: Stack(children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            child: Column(
+              children: [
+                searchBox(),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 50, bottom: 20),
+                        child: Text(
+                          'All ToDos',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      // Render ToDoItem inside a forloop
+                      // The right todo in ToDoItem is the todo inside Todo which we are getting from the list
+                      // While the left todo in ToDoItem is from todo_item.dart where it is expected
+                      for (ToDo todo in todosList) ToDoItem(todo: todo),
+                    ],
+                  ),
+                ),
+                // Adding of todo items container
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    children: [
+                      // Textfield Container
+                      Expanded(
+                          child: Container(
+                        margin:
+                            EdgeInsets.only(bottom: 20, right: 20, left: 0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.grey,
+                                offset: Offset(0.0, 0.0),
+                                blurRadius: 10.0,
+                                spreadRadius: 0.0)
+                          ],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                              hintText: 'Add a new todo item',
+                              border: InputBorder.none),
+                        ),
+                      )),
+                      // Button Container
+                      Container(
+                        margin: EdgeInsets.only(bottom: 20, right: 0),
+                        child: ElevatedButton(
+                          child: Text(
+                            '+',
+                            style: TextStyle(
+                              fontSize: 40,
+                            ),
+                          ),
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                              primary: tdBlue,
+                              minimumSize: Size(60, 60),
+                              elevation: 10),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ));
+        ]));
   }
 
   Widget searchBox() {
