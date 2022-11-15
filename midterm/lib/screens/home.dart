@@ -5,9 +5,14 @@ import '../model/todo.dart';
 import '../constants/colors.dart';
 import '../widgets/todo_item.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   // Create a variable todosList to iterate the values in the List<ToDo>
   final todosList = ToDo.todoList();
 
@@ -36,7 +41,12 @@ class Home extends StatelessWidget {
                       // Render ToDoItem inside a forloop
                       // The right todo in ToDoItem is the todo inside Todo which we are getting from the list
                       // While the left todo in ToDoItem is from todo_item.dart where it is expected
-                      for (ToDo todo in todosList) ToDoItem(todo: todo),
+                      for (ToDo todo in todosList)
+                        ToDoItem(
+                          todo: todo,
+                          onToDoChanged: _handleToDoChange,
+                          onDeleteItem: _deleteToDoItem,
+                        ),
                     ],
                   ),
                 ),
@@ -48,8 +58,7 @@ class Home extends StatelessWidget {
                       // Textfield Container
                       Expanded(
                           child: Container(
-                        margin:
-                            EdgeInsets.only(bottom: 20, right: 20, left: 0),
+                        margin: EdgeInsets.only(bottom: 20, right: 20, left: 0),
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                         decoration: BoxDecoration(
@@ -93,6 +102,20 @@ class Home extends StatelessWidget {
             ),
           ),
         ]));
+  }
+
+  void _handleToDoChange(ToDo todo) {
+    // To see the changes, we need to put it in a setState
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
+  }
+
+  void _deleteToDoItem(String id) {
+    // To see the changes, we need to put it in a setState
+    setState(() {
+      todosList.removeWhere((item) => item.id == id);
+    });
   }
 
   Widget searchBox() {
