@@ -84,7 +84,7 @@ class _HomeState extends State<Home> {
                           color: Colors.white,
                           boxShadow: const [
                             BoxShadow(
-                                color: Colors.grey,
+                                color: Color.fromARGB(85, 158, 158, 158),
                                 offset: Offset(0.0, 0.0),
                                 blurRadius: 10.0,
                                 spreadRadius: 0.0)
@@ -115,9 +115,11 @@ class _HomeState extends State<Home> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                              primary: tdBlue,
-                              minimumSize: Size(60, 60),
-                              elevation: 10),
+                            primary: tdBlue,
+                            minimumSize: Size(60, 60),
+                            elevation: 10,
+                            shadowColor: Color.fromARGB(85, 158, 158, 158),
+                          ),
                         ),
                       )
                     ],
